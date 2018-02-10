@@ -48,7 +48,9 @@ public class Dot implements ShapeItem{
 	 */
 	@Override
 	public boolean isInside(Point2D point) {
-		return false;
+		boolean insideX = (point.getX() > position.getX() - RADIUS) && (point.getX() < position.getX() + RADIUS);
+		boolean insideY = (point.getY() > position.getY() - RADIUS) && (point.getY() < position.getY() + RADIUS);
+		return insideX && insideY;
 	}
 
 }
