@@ -10,8 +10,8 @@ import java.util.Random;
 
 public class Box implements ShapeItem{
 
-	private final int X_SIZE = 50;
-	private final int Y_SIZE = 60;
+	private final int X_SIZE = 250;
+	private final int Y_SIZE = 250;
 	
 	private List<Dot> contents = new ArrayList<Dot>();
 	private Point2D position;
@@ -26,12 +26,12 @@ public class Box implements ShapeItem{
 	 * @param x - the initial x-position of the box
 	 * @param y - the initial y-position of the box
 	 */
-	public Box(int x, int y) {
+	public Box(double x, double y) {
 		position = new Point2D(x, y);
 		color = colors[new Random().nextInt(colors.length)];
 		this.rect = new Rectangle(position.getX(), position.getY(), X_SIZE, Y_SIZE);
 		this.rect.setStroke(color);
-		this.rect.setFill(Color.WHITE);
+		this.rect.setFill(Color.rgb(225, 225, 225, 0));
 	}
 	
 	/**
@@ -58,8 +58,8 @@ public class Box implements ShapeItem{
 	public void move(double dX, double dY) {
 		if (moveable) {
 			position = new Point2D(position.getX() + dX, position.getY() + dY);
-			rect.setX(rect.getX() + dX);
-			rect.setY(rect.getY() + dY);
+			this.rect.setX(position.getX());
+			this.rect.setY(position.getY());
 			for (Dot d : contents) {
 				d.setMoveable(moveable);
 				d.move(dX, dY);

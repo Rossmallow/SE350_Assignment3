@@ -18,6 +18,8 @@ public class Controller extends Application{
 	
 	private List<ShapeItem> shapeItems = new ArrayList<ShapeItem>();
 	private Point2D lastPosition;
+	
+	private boolean selected = false;
 
 	/**
 	 * Initializes a pane and creates the scene for the application.
@@ -25,8 +27,8 @@ public class Controller extends Application{
 	public void start(Stage stage) throws Exception {
 		pane = new AnchorPane();
 		Scene scene = new Scene(pane, winX, winY);
-		shapeItems.add(new Box(40, 50));
-		shapeItems.add(new Dot(10, 10));
+		shapeItems.add(new Box(50, 50));
+		shapeItems.add(new Dot(15, 15));
 		setMouseHandler(scene);
 		stage.setScene(scene);
 		stage.setTitle("Dots and Boxes");
@@ -68,38 +70,26 @@ public class Controller extends Application{
 				Point2D clickPoint = new Point2D(event.getX(), event.getY());
 				String eventName = event.getEventType().getName();
 				switch (eventName) {
-				/**
-				 * When the mouse is pressed, check if it is inside a ShapeItem.
-				 * If yes, set that ShapeItem to "moveable."
-				 * If no, set all ShapeItems to not "moveable."
-				 */
 				case ("MOUSE_PRESSED"):
 					if (lastPosition != null) {
 						for(ShapeItem s : shapeItems) {
 							if(s.surrounds(clickPoint)) {
 								s.setMoveable(true);
+								selected = true;
+								break;
 							}
-							else
+							else {
 								s.setMoveable(false);
-						}
-					}
-				/**
-				 * When the mouse is dragged, update the positions of each ShapeItem.
-				 */
-				case ("MOUSE_DRAGGED"):
-					if (lastPosition != null) {
-						double deltaX = clickPoint.getX() - lastPosition.getX();
-						double deltaY = clickPoint.getY() - lastPosition.getY();
-						for(ShapeItem s : shapeItems) {
-							if(s.getMoveable()) {
-								s.move(deltaX, deltaY);
+								selected = false;
 							}
 						}
+						break;
 					}
-				/**
-				 * When the mouse is released, add or remove dots from boxes
-				 */
 				case ("MOUSE_RELEASED"):
+					if (!selected) {
+						shapeItems.add(new Dot(clickPoint.getX(), clickPoint.getY()));
+						drawAll();
+					}
 					if (lastPosition != null) {
 						for(ShapeItem b : shapeItems) { 
 							if (b.getClass() == new Box(1, 1).getClass()) {
@@ -107,15 +97,76 @@ public class Controller extends Application{
 									if (d.getClass() == new Dot(1, 1).getClass()) { 
 										if (b.surrounds(d.getPosition())) {
 											((Box) b).add((Dot) d);
+											break;
 										}
 										else {
 											((Box) b).remove((Dot) d);
+											break;
 										}
 									}
 								} 
 							}
 						}
+						break;
 					}
+				case ("MOUSE_DRAGGED"):
+					if (lastPosition != null) {
+						double deltaX = clickPoint.getX() - lastPosition.getX();
+						double deltaY = clickPoint.getY() - lastPosition.getY();
+						for(ShapeItem s : shapeItems) {
+							if(s.getMoveable()) {
+								s.move(deltaX, deltaY);
+								break;
+							}
+						}
+						break;
+					}
+				
+//				/**
+//				 * When the mouse is pressed, check if it is inside a ShapeItem.
+//				 * If yes, set that ShapeItem to "moveable."
+//				 * If no, set all ShapeItems to not "moveable."
+//				 */
+//				case ("MOUSE_PRESSED"):
+//					if (lastPosition != null) {
+//						for(ShapeItem s : shapeItems) {
+//							if(s.surrounds(clickPoint)) {
+//								s.setMoveable(true);
+//							}
+//							else
+//								s.setMoveable(false);
+//						}
+//					}
+//				case ("MOUSE_RELEASED"):
+//					if (lastPosition != null) {
+//						for(ShapeItem b : shapeItems) { 
+//							if (b.getClass() == new Box(1, 1).getClass()) {
+//								for (ShapeItem d : shapeItems) {
+//									if (d.getClass() == new Dot(1, 1).getClass()) { 
+//										if (b.surrounds(d.getPosition())) {
+//											((Box) b).add((Dot) d);
+//										}
+//										else {
+//											((Box) b).remove((Dot) d);
+//										}
+//									}
+//								} 
+//							}
+//						}
+//					}
+//				/**
+//				 * When the mouse is dragged, update the positions of each ShapeItem.
+//				 */
+//				case ("MOUSE_DRAGGED"):
+//					if (lastPosition != null) {
+//						double deltaX = clickPoint.getX() - lastPosition.getX();
+//						double deltaY = clickPoint.getY() - lastPosition.getY();
+//						for(ShapeItem s : shapeItems) {
+//							if(s.getMoveable()) {
+//								s.move(deltaX, deltaY);
+//							}
+//						}
+//					}
 				}
 				lastPosition = clickPoint;
 			}

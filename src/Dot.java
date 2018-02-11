@@ -5,7 +5,7 @@ import javafx.scene.shape.Shape;
 
 public class Dot implements ShapeItem{
 
-	private final int DISPLAY_SIZE = 10;
+	private final int DISPLAY_SIZE = 15;
 	private final int RADIUS = DISPLAY_SIZE / 2;
 	
 	private Point2D position;
@@ -18,7 +18,7 @@ public class Dot implements ShapeItem{
 	 * @param x - the initial x-position of the dot
 	 * @param y - the initial y-position of the dot
 	 */
-	public Dot(int x, int y) {
+	public Dot(double x, double y) {
 		position = new Point2D(x, y);
 		color = Color.BLACK;
 		this.circle = new Circle(position.getX(), position.getY(), DISPLAY_SIZE, this.color);
@@ -39,8 +39,8 @@ public class Dot implements ShapeItem{
 	public void move(double dX, double dY) {
 		if (moveable) {
 			position = new Point2D(position.getX() + dX, position.getY() + dY);
-			circle.setCenterX(position.getX());
-			circle.setCenterY(position.getY());
+			this.circle.setCenterX(position.getX());
+			this.circle.setCenterY(position.getY());
 		}
 	}
 
