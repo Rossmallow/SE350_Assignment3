@@ -2,7 +2,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.shape.Shape;
 
 public interface ShapeItem {
-
+	
 	/**
 	 * Moves the shape
 	 * @param dX - How much to change the x position
@@ -21,5 +21,23 @@ public interface ShapeItem {
 	 * @param point - the point to test
 	 * @return - true if the point is inside the ShapeItem, false if it is not.
 	 */
-	public boolean isInside(Point2D point);
+	public boolean surrounds(Point2D point);
+	
+	/**
+	 * Sets the ShapeItem's "moveable" value
+	 * @param b - the value to be set
+	 */
+	public void setMoveable(boolean b);
+	
+	/**
+	 * Returns the ShapeItem's "moveable" value
+	 * @return - the ShapeItem's "moveable" value
+	 */
+	public boolean getMoveable();
+	
+	/**
+	 * Returns the ShapeItem's position
+	 * @return - the ShapeItem's position
+	 */
+	public Point2D getPosition();
 }
