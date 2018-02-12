@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -19,7 +20,7 @@ public class Controller extends Application{
 	private List<ShapeItem> shapeItems = new ArrayList<ShapeItem>();
 	private Point2D lastPosition;
 	
-	private boolean selected = false;
+	private int button;
 
 	/**
 	 * Initializes a pane and creates the scene for the application.
@@ -72,42 +73,59 @@ public class Controller extends Application{
 				switch (eventName) {
 				case ("MOUSE_PRESSED"):
 					if (lastPosition != null) {
+						if (event.isPrimaryButtonDown()) {
+							button = 1;
+						}
+						else if (event.isSecondaryButtonDown()) {
+							button = 2;
+						}
+						else {
+							button = 0;
+						}
 						for(ShapeItem s : shapeItems) {
 							if(s.surrounds(clickPoint)) {
 								s.setMoveable(true);
-								selected = true;
-								break;
 							}
 							else {
 								s.setMoveable(false);
-								selected = false;
 							}
 						}
 						break;
 					}
 				case ("MOUSE_RELEASED"):
-					if (!selected) {
-						shapeItems.add(new Dot(clickPoint.getX(), clickPoint.getY()));
-						drawAll();
-					}
 					if (lastPosition != null) {
-						for(ShapeItem b : shapeItems) { 
-							if (b.getClass() == new Box(1, 1).getClass()) {
-								for (ShapeItem d : shapeItems) {
-									if (d.getClass() == new Dot(1, 1).getClass()) { 
-										if (b.surrounds(d.getPosition())) {
-											((Box) b).add((Dot) d);
-											break;
-										}
-										else {
-											((Box) b).remove((Dot) d);
-											break;
-										}
-									}
-								} 
+						boolean selected = false;
+						for (int i = 0; !selected && i < shapeItems.size(); i++) {
+							if (shapeItems.get(i).getMoveable()) {
+								selected = true;
 							}
 						}
-						break;
+						if (!selected) {
+							if (button == 1) {
+								shapeItems.add(new Dot(clickPoint.getX(), clickPoint.getY()));
+								drawAll();
+							}
+							else if (button == 2) {
+								shapeItems.add(new Box(clickPoint.getX(), clickPoint.getY()));
+								drawAll();
+							}
+							break;
+						} else if (selected){
+							for (ShapeItem b : shapeItems) {
+								if (b.getClass() == new Box(1, 1).getClass()) {
+									for (ShapeItem d : shapeItems) {
+										if (d.getClass() == new Dot(1, 1).getClass()) {
+											if (b.surrounds(d.getPosition())) {
+												((Box) b).add((Dot) d);
+											} else {
+												((Box) b).remove((Dot) d);
+											}
+										}
+									}
+								}
+							}
+							break;
+						}
 					}
 				case ("MOUSE_DRAGGED"):
 					if (lastPosition != null) {
@@ -116,7 +134,6 @@ public class Controller extends Application{
 						for(ShapeItem s : shapeItems) {
 							if(s.getMoveable()) {
 								s.move(deltaX, deltaY);
-								break;
 							}
 						}
 						break;
