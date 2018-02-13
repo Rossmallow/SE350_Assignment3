@@ -39,8 +39,10 @@ public class Box implements ShapeItem{
 	 * @param d - the dot to be added
 	 */
 	public void add(Dot d) {
-		contents.add(d);
-		d.changeColor(color);
+		if (!contents.contains(d)) {
+			contents.add(d);
+			d.changeColor(color);
+		}
 	}
 	
 	/**
@@ -48,8 +50,10 @@ public class Box implements ShapeItem{
 	 * @param d - the dot to remove
 	 */
 	public void remove(Dot d) {
-		contents.remove(d);
-		d.changeColor(Color.BLACK);
+		if (contents.contains(d) ) {
+			contents.remove(d);
+			d.changeColor(Color.BLACK);
+		}
 	}
 	
 	/**

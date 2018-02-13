@@ -85,15 +85,33 @@ public class Controller extends Application{
 						else {
 							button = 0;
 						}
-						for(ShapeItem s : shapeItems) {
-							if(s.surrounds(clickPoint)) {
-								s.setMoveable(true);
+						for (int d = 0; d < dots.size(); d++) {
+							if (dots.get(d).surrounds(clickPoint) && !selected) {
+								dots.get(d).setMoveable(true);
 								selected = true;
 							}
 							else {
-								s.setMoveable(false);
+								dots.get(d).setMoveable(false);
 							}
 						}
+						for (int b = 0; b < boxes.size(); b++) {
+							if (boxes.get(b).surrounds(clickPoint) && !selected) {
+								boxes.get(b).setMoveable(true);
+								selected = true;
+							}
+							else {
+								boxes.get(b).setMoveable(false);
+							}
+						}
+//						for(ShapeItem s : shapeItems) {
+//							if(s.surrounds(clickPoint)) {
+//								s.setMoveable(true);
+//								selected = true;
+//							}
+//							else {
+//								s.setMoveable(false);
+//							}
+//						}
 						break;
 					}
 				case ("MOUSE_RELEASED"):
@@ -111,16 +129,18 @@ public class Controller extends Application{
 								boxes.add(b);
 								drawAll();
 							}
-							
 							break;
-						} else if (selected){
+						} 
+						else if (selected){
+							for (Box b : boxes) {
+								for (Dot d : dots) {
+										b.remove(d);
+								}
+							}
 							for (Box b : boxes) {
 								for (Dot d : dots) {
 									if (b.surrounds(d.getPosition())) {
 										b.add(d);
-									}
-									else if (b.getContents().contains(d)){
-										b.remove(d);
 									}
 								}
 							}
