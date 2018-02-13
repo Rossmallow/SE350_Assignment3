@@ -30,8 +30,6 @@ public class Controller extends Application{
 	public void start(Stage stage) throws Exception {
 		pane = new AnchorPane();
 		Scene scene = new Scene(pane, winX, winY);
-//		shapeItems.add(new Box(50, 50));
-//		shapeItems.add(new Dot(15, 15));
 		setMouseHandler(scene);
 		stage.setScene(scene);
 		stage.setTitle("Dots and Boxes");
