@@ -40,12 +40,19 @@ public class Controller extends Application{
 
 	}
 	
+	/**
+	 * For each ShapeItem in shapeItems, call drawItem on it.
+	 */
 	private void drawAll() {
 		for (ShapeItem s : this.shapeItems) {
 			drawItem(s);
 		}
 	}
 	
+	/**
+	 * Gets the shape of the ShapeItem, if it's not added to the pane, add it.
+	 * @param i - the ShapeItem to be drawn.
+	 */
 	private void drawItem(ShapeItem i) {
 		Shape s = i.getShape();
 		if (!pane.getChildren().contains(s)) {
@@ -73,6 +80,13 @@ public class Controller extends Application{
 				Point2D clickPoint = new Point2D(event.getX(), event.getY());
 				String eventName = event.getEventType().getName();
 				switch (eventName) {
+				/**
+				 * Sets the value of button to equal the button that is committing the action.
+				 * Initially sets selected to be false.
+				 * Iterate through the dots, if any is selected, set that dot's 'movable' to be true, 
+				 * 		and set the rest to have a 'moveable' of false.
+				 * Do the same for the boxes.
+				 */
 				case ("MOUSE_PRESSED"):
 					if (lastPosition != null) {
 						selected = false;
@@ -103,17 +117,16 @@ public class Controller extends Application{
 								boxes.get(b).setMoveable(false);
 							}
 						}
-//						for(ShapeItem s : shapeItems) {
-//							if(s.surrounds(clickPoint)) {
-//								s.setMoveable(true);
-//								selected = true;
-//							}
-//							else {
-//								s.setMoveable(false);
-//							}
-//						}
 						break;
 					}
+				/**
+				 * Checks if any shapeItem has been selected.
+				 * If no, check which button was released.
+				 * 		If button 1 was pressed, create a new dot and add it to the shapeItems list and the dots list, then draw it.
+				 * 		If button 2 was pressed, create a new box and add it to the shapeItems list and the box list, then draw it.
+				 * If yes, for each box, iterate through each dot, and remove every dot from it's box.
+				 * Then, for each box, iterate through each dot, and if the dot is inside a box, add it to that box.
+				 */
 				case ("MOUSE_RELEASED"):
 					if (lastPosition != null) {
 						if (!selected) {
@@ -147,6 +160,10 @@ public class Controller extends Application{
 							break;
 						}
 					}
+				/**
+				 * Set deltaX and deltaY to be the distance the mouse has moved on the x and y axises.
+				 * Then, for each ShapeItem in shapeItems, move the shape by deltaX and deltaY. 
+				 */
 				case ("MOUSE_DRAGGED"):
 					if (lastPosition != null) {
 						double deltaX = clickPoint.getX() - lastPosition.getX();
@@ -158,52 +175,6 @@ public class Controller extends Application{
 						}
 						break;
 					}
-				
-//				/**
-//				 * When the mouse is pressed, check if it is inside a ShapeItem.
-//				 * If yes, set that ShapeItem to "moveable."
-//				 * If no, set all ShapeItems to not "moveable."
-//				 */
-//				case ("MOUSE_PRESSED"):
-//					if (lastPosition != null) {
-//						for(ShapeItem s : shapeItems) {
-//							if(s.surrounds(clickPoint)) {
-//								s.setMoveable(true);
-//							}
-//							else
-//								s.setMoveable(false);
-//						}
-//					}
-//				case ("MOUSE_RELEASED"):
-//					if (lastPosition != null) {
-//						for(ShapeItem b : shapeItems) { 
-//							if (b.getClass() == new Box(1, 1).getClass()) {
-//								for (ShapeItem d : shapeItems) {
-//									if (d.getClass() == new Dot(1, 1).getClass()) { 
-//										if (b.surrounds(d.getPosition())) {
-//											((Box) b).add((Dot) d);
-//										}
-//										else {
-//											((Box) b).remove((Dot) d);
-//										}
-//									}
-//								} 
-//							}
-//						}
-//					}
-//				/**
-//				 * When the mouse is dragged, update the positions of each ShapeItem.
-//				 */
-//				case ("MOUSE_DRAGGED"):
-//					if (lastPosition != null) {
-//						double deltaX = clickPoint.getX() - lastPosition.getX();
-//						double deltaY = clickPoint.getY() - lastPosition.getY();
-//						for(ShapeItem s : shapeItems) {
-//							if(s.getMoveable()) {
-//								s.move(deltaX, deltaY);
-//							}
-//						}
-//					}
 				}
 				lastPosition = clickPoint;
 			}
