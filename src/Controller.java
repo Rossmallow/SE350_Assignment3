@@ -5,7 +5,6 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -18,9 +17,12 @@ public class Controller extends Application{
 	private Pane pane;
 	
 	private List<ShapeItem> shapeItems = new ArrayList<ShapeItem>();
+	private List<Box> boxes = new ArrayList<Box>();
+	private List<Dot> dots = new ArrayList <Dot>();
 	private Point2D lastPosition;
 	
 	private int button;
+	private boolean selected;
 
 	/**
 	 * Initializes a pane and creates the scene for the application.
@@ -28,8 +30,8 @@ public class Controller extends Application{
 	public void start(Stage stage) throws Exception {
 		pane = new AnchorPane();
 		Scene scene = new Scene(pane, winX, winY);
-		shapeItems.add(new Box(50, 50));
-		shapeItems.add(new Dot(15, 15));
+//		shapeItems.add(new Box(50, 50));
+//		shapeItems.add(new Dot(15, 15));
 		setMouseHandler(scene);
 		stage.setScene(scene);
 		stage.setTitle("Dots and Boxes");
@@ -73,6 +75,7 @@ public class Controller extends Application{
 				switch (eventName) {
 				case ("MOUSE_PRESSED"):
 					if (lastPosition != null) {
+						selected = false;
 						if (event.isPrimaryButtonDown()) {
 							button = 1;
 						}
@@ -85,6 +88,7 @@ public class Controller extends Application{
 						for(ShapeItem s : shapeItems) {
 							if(s.surrounds(clickPoint)) {
 								s.setMoveable(true);
+								selected = true;
 							}
 							else {
 								s.setMoveable(false);
@@ -94,33 +98,29 @@ public class Controller extends Application{
 					}
 				case ("MOUSE_RELEASED"):
 					if (lastPosition != null) {
-						boolean selected = false;
-						for (int i = 0; !selected && i < shapeItems.size(); i++) {
-							if (shapeItems.get(i).getMoveable()) {
-								selected = true;
-							}
-						}
 						if (!selected) {
 							if (button == 1) {
-								shapeItems.add(new Dot(clickPoint.getX(), clickPoint.getY()));
+								Dot d = new Dot(clickPoint.getX(), clickPoint.getY());
+								shapeItems.add(d);
+								dots.add(d);
 								drawAll();
 							}
 							else if (button == 2) {
-								shapeItems.add(new Box(clickPoint.getX(), clickPoint.getY()));
+								Box b = new Box(clickPoint.getX(), clickPoint.getY());
+								shapeItems.add(b);
+								boxes.add(b);
 								drawAll();
 							}
+							
 							break;
 						} else if (selected){
-							for (ShapeItem b : shapeItems) {
-								if (b.getClass() == new Box(1, 1).getClass()) {
-									for (ShapeItem d : shapeItems) {
-										if (d.getClass() == new Dot(1, 1).getClass()) {
-											if (b.surrounds(d.getPosition())) {
-												((Box) b).add((Dot) d);
-											} else {
-												((Box) b).remove((Dot) d);
-											}
-										}
+							for (Box b : boxes) {
+								for (Dot d : dots) {
+									if (b.surrounds(d.getPosition())) {
+										b.add(d);
+									}
+									else if (b.getContents().contains(d)){
+										b.remove(d);
 									}
 								}
 							}

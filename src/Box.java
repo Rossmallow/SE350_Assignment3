@@ -53,6 +53,14 @@ public class Box implements ShapeItem{
 	}
 	
 	/**
+	 * Returns the list of contents
+	 * @return - the list of contents
+	 */
+	public List<Dot> getContents() {
+		return contents;
+	}
+	
+	/**
 	 * An implementation of "move" from the ShapeItem interface
 	 */
 	public void move(double dX, double dY) {
@@ -61,8 +69,10 @@ public class Box implements ShapeItem{
 			this.rect.setX(position.getX());
 			this.rect.setY(position.getY());
 			for (Dot d : contents) {
-				d.setMoveable(moveable);
-				d.move(dX, dY);
+				if (!d.getMoveable()) {
+					d.setMoveable(moveable);
+					d.move(dX, dY);
+				}
 			}
 		}
 	}
